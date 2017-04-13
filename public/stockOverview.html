@@ -1,0 +1,415 @@
+<html>
+<head>
+	<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.1.1.min.js"></script>
+	<script src="http://ajax.aspnetcdn.com/ajax/knockout/knockout-3.3.0.js"></script>
+	
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+	<!-- Latest compiled and minified JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+	
+	<style type="text/css"> /* For having a scrollable table */
+	.own-table-internalscroll thead, .own-table-internalscroll tbody, .own-table-internalscroll tr, .own-table-internalscroll td, .own-table-internalscroll th { display: block; }
+	.own-table-internalscroll tr:after {
+		content: ' ';
+		display: block;
+		visibility: hidden;
+		clear: both;
+    }
+	.own-table-internalscroll tbody {
+		height: 220px;
+		overflow-y: auto;
+    }
+	.own-table-internalscroll thead {
+		/* fallback */
+    }
+	.own-table-internalscroll thead th {
+		height: 30px;
+		/*text-align: left;*/
+    }
+	.own-table-internalscroll tbody td, thead th {
+		width: 12.5%;
+		float: left;
+    }
+	</style>
+
+</head>
+<body>
+	<p style="padding:30px;"></p>
+	<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">Stock Manager</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="#"><span class="glyphicon glyphicon-expand"
+                         aria-hidden="true"></span> Sectoranalyse </a></li>
+					<li class="active"><a href="#"><span class="glyphicon glyphicon-dashboard"
+                         aria-hidden="true"></span> Totaal overzicht </a></li>
+                    <li><a href="#"><span class="glyphicon glyphicon-signal"
+                         aria-hidden="true"></span> Geschiedenis </a></li>
+				</ul>
+				<ul class="nav navbar-nav navbar-right">
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"
+                         role="button" aria-haspopup="true" aria-expanded="false">
+                         <span class="glyphicon glyphicon-off"
+                         aria-hidden="true"></span> Account <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#">Details</a></li>
+                            <li><a href="#">Log out</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+	<div class="container">
+		<div class="row">
+			<div class="col-md-1"></div>
+			<div class="col-md-10">
+				<div class="alert alert-danger" role="alert">Data in process of being retrieved.</div>
+				<div class="panel panel-primary">
+					<div class="panel-heading">Aandelen overzicht</div>
+					<table class="table table-hover own-table-internalscroll">
+						<thead>
+							<tr>
+								<th>Stock Name</th><th>Price</th><th>% 1d</th><th>% 1m</th><th>% 1y</th><th>Value</th><th><div data-toggle="tooltip" rel="tooltip" title="Return on stock value (no costs or dividends included)">Return (%)</div> </th><th><div data-toggle="tooltip" rel="tooltip" title="Return on stock value (no costs or dividends included)">Return (abs)</div></th>
+							</tr>
+						</thead>
+						<tbody data-bind="foreach: stockList">
+							<tr>
+								<!-- <td data-bind="text: shortName"></td> -->
+								<td><div data-bind="template: { name: 'stock-template', data: $data}"></div></td>
+								<td data-bind="text: price"></td>
+								<td data-bind="text: dayStockPercentage"></td>
+								<td data-bind="text: monthStockPercentage"></td>
+								<td data-bind="text: yearStockPercentage"></td>
+								<td data-bind="text: stockValue"></td>
+								<td data-bind="text: stockReturnPerc" align="center"></td>
+								<td data-bind="text: stockReturnAbs" align="center"></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<div class="col-md-1"></div>
+		</div>
+		<div class="row">
+			<div class="col-md-1"></div>
+			<div class="col-md-5">
+				<div class="panel panel-info">
+					<div class="panel-heading">Totalen</div>
+					<table class="table table-hover">
+						<tbody>
+							<tr>
+								<td>Totale aandeelwaarde</td>
+								<td data-bind="text: totalStockValue"></td>
+							</tr>
+							<tr>
+								<td><div data-toggle="tooltip" rel="tooltip" title="Return on stock value (no costs or dividends included)">Totale return (%)</div></td>
+								<td data-bind= "text: totalStockValuePercReturn"></td>
+							</tr>
+							<tr>
+								<td><div data-toggle="tooltip" rel="tooltip" title="Return on stock value (no costs or dividends included)">Totale return (abs)</div></td>
+								<td data-bind= "text: totalStockValueAbsReturn"></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<div class="col-md-5">
+				<div class="panel panel-info">
+					<div class="panel-heading">Traffic Lights</div>
+					<table class="table table-hover">
+						<tbody>
+							<tr>
+								<td>Dag</td>
+								<td data-bind="text: dayLight">Value unknown</td>
+							</tr>
+							<tr>
+								<td>Maand</td>
+								<td data-bind="text: monthLight">Value unknown</td>
+							</tr>
+							<tr>
+								<td>Jaar</td>
+								<td data-bind="text: yearLight">Value unknown</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<div class="col-md-1"></div>
+		</div>
+	</div>
+	
+	<div class="modal fade" id="stock-detail-modal" tabindex="-1" role="dialog" data-bind="$data">
+		<div class="modal-dialog modal-md" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title">Aandeel informatie</h4>
+				</div>
+				<div class="modal-body">
+					<p>One fine body&hellip;</p>
+					<div data-bind="text: shortName"></div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<script type="text/html" id="stock-template2">
+		<a data-toggle="modal" href=".bs-example-modal-lg"><div data-bind="text: shortName"></div></a>
+	</script>
+	
+	<script type="text/html" id="stock-template">
+		<a data-toggle="modal" href="#stock-detail-modal" id="1234" data-bind="click: $data"><div data-bind="text: shortName"></div></a>
+		<!-- <div id="hidden-modal-div" style = "display: none" data-bind=></div> -->
+		
+	</script>
+	
+	
+	<script>
+	$('#stock-detail-modal').on('show.bs.modal', function (event) {
+		// var trigger = $(event.relatedTarget).data;
+		// console.log(trigger);
+		// var button = $(event.relatedTarget) // Button that triggered the modal
+		// var recipient = button.data('whatever') // Extract info from data-* attributes
+			// If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+			// Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+		// var modal = $(this)
+		// modal.find('.modal-title').text('New message to Peter');
+		console.log("In jQuery");
+	})
+	</script>
+
+	<script>
+
+	function Stock(stockName){
+		var self = this;
+		self.name = ko.observable(stockName);
+		self.shortName = ko.observable(stockName);
+		self.dayStockPercentage = ko.observable("not known");
+		self.monthStockPercentage = ko.observable("not known");
+		self.yearStockPercentage = ko.observable("not known");
+		self.stockValue = ko.observable("not known");
+		self.stockReturnAbs = ko.observable("not known");
+		self.stockReturnPerc = ko.observable("not known");
+		self.price = ko.observable("not known");
+		
+		self.updateStockData = function(){
+			$.ajax({
+				url: "/stockShortName/" + self.name(),
+				type: "GET",
+				success: function(response){
+					if(response!=="notAvailable"){
+						self.shortName(response);
+					}
+				},
+				error: function(xhr) {
+					// to be implemented
+				}
+			});
+			$.ajax({
+				url: "/dayStockPercentage/" + self.name(),
+				type: "GET",
+				success: function(response){
+					console.log(response);
+					self.dayStockPercentage(response);
+				},
+				error: function(xhr) {
+					// to be implemented
+				}
+			});
+			$.ajax({
+				url: "/yearStockPercentage/" + self.name(),
+				type: "GET",
+				success: function(response){
+					self.yearStockPercentage(response);
+				},
+				error: function(xhr) {
+					// to be implemented
+				}
+			});
+			$.ajax({
+				url: "/monthStockPercentage/" + self.name(),
+				type: "GET",
+				success: function(response){
+					self.monthStockPercentage(response);
+				},
+				error: function(xhr) {
+					// to be implemented
+				}
+			});
+			$.ajax({
+				url: "/stockValue/" + self.name(),
+				type: "GET",
+				success: function(response){
+					self.stockValue(response);
+				},
+				error: function(xhr) {
+					// to be implemented
+				}
+			});
+			$.ajax({
+				url: "/stockReturn/" + self.name(),
+				type: "GET",
+				success: function(response){
+					self.stockReturnAbs(response.returnAbs);
+					self.stockReturnPerc(response.returnPerc);
+				},
+				error: function(xhr) {
+					// to be implemented
+				}
+			});
+			$.ajax({
+				url: "/dayStockPrice/" + self.name(),
+				type: "GET",
+				success: function(response){
+					self.price(response);
+				},
+				error: function(xhr) {
+					// to be implemented
+				}
+			});
+		};
+		self.updateStockData();
+	};
+
+	function StockViewModel(){
+		var self = this;
+		self.stockList = ko.observableArray([]);
+		self.totalStockValue = ko.observable("not known");
+		self.dayLight = ko.observable("not known");
+		self.monthLight = ko.observable("not known");
+		self.yearLight = ko.observable("not known");
+		self.totalStockValueAbsReturn = ko.observable("not known");
+		self.totalStockValuePercReturn = ko.observable("not known");
+
+		self.addStocks = function(stocks){
+			for (let i=0; i<stocks.length; i++){
+				let aStock = new Stock(stocks[i]);
+				console.log("Creating stock " + stocks[i]);
+				self.stockList.push(aStock);
+			}	
+		};
+		
+		self.refreshStockListData = function(){
+			for (let i=0; i<self.stockList().length; i++){
+				let theStockList = self.stockList();
+				theStockList[i].updateStockData();
+				console.log("Updating stock: " + theStockList[i].name());
+			}
+		};
+		
+		$.ajax({
+			url: "/stockArray",
+			type: "GET",
+			success: function(response) {
+				console.log("StockArray succesfully retrieved");
+				console.log(response);
+				self.addStocks(response);
+			},
+			error: function(xhr) {
+				// to be implemented
+			}
+		});
+		
+		self.getTotalStockValue = function(){
+			$.ajax({
+				url: "/totalStockValueEURConverted",
+				type: "GET",
+				success: function(response) {
+					console.log("TotalStockValue succesfully retrieved");
+					console.log(response);
+					self.totalStockValue(response);
+				},
+				error: function(xhr) {
+					// to be implemented
+				}
+			});
+		};
+				
+		self.getTotalStockValueReturn = function(){
+			$.ajax({
+				url: "/totalStockValueReturn",
+				type: "GET",
+				success: function(response) {
+					console.log("TotalStockValueReturn succesfully retrieved");
+					console.log(response);
+					self.totalStockValueAbsReturn(response.returnAbsConv);
+					self.totalStockValuePercReturn(response.returnPercConv);
+				},
+				error: function(xhr) {
+					// to be implemented
+				}
+			});
+		};
+		
+		self.getTrafficLights = function(){
+			$.ajax({
+				url: "/trafficLights",
+				type: "GET",
+				success: function(response) {
+					console.log("TrafficLigts succesfully retrieved");
+					console.log(response);
+					self.dayLight(response.day);
+					self.monthLight(response.month);
+					self.yearLight(response.year);
+				},
+				error: function(xhr) {
+					// to be implemented
+				}
+			});
+		};
+		
+		function refreshStockData(){
+			setInterval(function(){
+				self.refreshStockListData();
+			},30000)
+		};
+		
+		function refreshTrafficLights(){
+			setInterval(function(){
+				self.getTrafficLights();
+			},30000)
+		};
+		
+		function refreshTotals(){
+			setInterval(function(){
+				self.getTotalStockValue
+				self.getTotalStockValueReturn();
+			}, 30000);
+		};
+		
+		self.refreshStockListData()
+		self.getTrafficLights();
+		self.getTotalStockValue();
+		self.getTotalStockValueReturn();
+		refreshStockData();
+		refreshTrafficLights();
+		refreshTotals();
+		
+	};
+
+	ko.applyBindings(new StockViewModel() );
+	</script>
+	<script> <!-- For hoovering tooltips-->
+		$(document).ready(function(){
+			$('[data-toggle="tooltip"]').tooltip({ placement: 'right'}); 
+		});
+	</script>
+</body>
+</html>

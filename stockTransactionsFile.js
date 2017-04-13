@@ -27,6 +27,18 @@ var stockTransactionsArray = [
 	},
 	{
 		name: "Aedifica",
+		transactionType: "buy",
+		number: 5,
+		stockValue: 61,
+		currency: "EUR",
+		transactionDate: "2017-03-28",
+		transactionCosts: {
+			currency: "EUR",
+			brokerRenumeration: 5.0			
+		}
+	},
+	{
+		name: "Aedifica",
 		transactionType: "sell",
 		number: 0,
 		stockValue: 70,
@@ -117,6 +129,33 @@ var stockTransactionsArray = [
 			dividendTax: 11.34		
 		}
 	},
+	{
+		name: "Tesla",
+		transactionType: "buy",
+		number: 8,
+		stockValue: 250.82,
+		currency: "USD",
+		exchangerate: 1.0571,
+		transactionDate: "2017-03-01",
+		transactionCosts: {
+			currency: "EUR",
+			stockTax: 5.51,
+			brokerRenumeration: 29.95,
+		}
+	},
+];
+
+var stockPropertiesArray = [
+	{
+		name: "Lyxor UCITS ETF BEL 20 TR",
+		shortName: "BEL20",
+		stockType: "tracker"
+	},
+	{
+		name: "Lyxor Nasdaq 100 UCITS ETF",
+		shortName: "NASDAQ100",
+		stockType: "tracker"
+	}	
 ];
 
 var getStockTransactionsArray = exports.getStockTransactionsArray = function (){
@@ -176,3 +215,7 @@ var getStockCurrency = exports.getStockCurrency = function (stockName){
 	});
 	return thecurrency;
 }
+
+var getStockPropertiesArray = exports.getStockPropertiesArray = function(){
+	return stockPropertiesArray;
+};

@@ -10,6 +10,7 @@ function getCurrentStockInfo(url, callback) {
 		var status = xhr.status;
 		if (status == 200) {
 			var JSONResponse = JSON.parse(xhr.responseText);
+			console.log("XHR responseText", xhr.responseText);
 			callback(null, JSONResponse);
 		} else {
 			callback(status);
@@ -34,6 +35,7 @@ function getDayPercentage(stockName, currentStockInfo){
 }
 
 function getMonthPercentage(stockName, currentStockInfo){
+	//console.log("GMP",currentStockInfo);
 	var historyStr = "history";
 	var monthPercentageOrig = currentStockInfo
 		.find(function(arrayElement){
@@ -52,6 +54,17 @@ function getMonthPercentage(stockName, currentStockInfo){
 	}
 	return monthPercentage;
 }
+
+/*
+function extractMonthPercentage(stockInfo) {
+	return stockInfo["history"]
+		.find(arrayElement => arrayElement.timespan === "1 maand")
+		.percent.replace(/,/g, '.');
+}
+
+var monthPercentages = currentStockInfo.map(extractMonthPercentage);
+
+*/
 
 function getYearPercentage(stockName, currentStockInfo){
 	var historyStr = "history";
@@ -170,7 +183,7 @@ function getTotalStockValue(currentStockInfo){
 }
 
 var getStarted = exports.getStarted = function (){
-	getCurrentStockInfo_request("https://pdbss.herokuapp.com/");
+	getCurrentStockInfo_request("https://pdbss.herokuapp.com/withRecover");
 }
 
 function getCurrentStockInfo_request(url){
