@@ -77,7 +77,8 @@
 		<div class="row">
 			<div class="col-md-1"></div>
 			<div class="col-md-10">
-				<div class="alert alert-danger" role="alert">Data in process of being retrieved.</div>
+				<div class="alert alert-danger fade in alert-dismissable" role="alert" id="alertDataBeingRetrieved">Data in process of being retrieved.
+				<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a></div>
 				<p>Most recent data retrieval at server: <span data-bind="text: lastDataRetrievalTime"></span></p>
 				<div class="panel panel-primary">
 					<div class="panel-heading">Aandelen overzicht</div>
@@ -197,6 +198,8 @@
 	</script>
 
 	<script>
+	
+	var dataRetrieved = false;
 
 	function Stock(stockName){
 		var self = this;
@@ -229,6 +232,10 @@
 				success: function(response){
 					console.log(response);
 					self.dayStockPercentage(response);
+					if(response!=null){
+						dataRetrieved = true;
+						closeAlertDataBeingRetrieved();
+					}
 				},
 				error: function(xhr) {
 					// to be implemented
@@ -420,9 +427,15 @@
 		refreshTotals();
 		
 	};
-
+	
+	function closeAlertDataBeingRetrieved(){
+		$('#alertDataBeingRetrieved').alert('close');
+	};
+	
 	ko.applyBindings(new StockViewModel() );
+	
 	</script>
+	
 	<script> <!-- For hoovering tooltips-->
 		$(document).ready(function(){
 			$('[data-toggle="tooltip"]').tooltip({ placement: 'right'}); 
