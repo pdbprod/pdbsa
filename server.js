@@ -9,6 +9,7 @@ var hostname = 'localhost';
 var port = 3000;
 
 var USDtoEUR = 0.934710473;
+var lastDataRetrievalTime = 'none';
 // var stockArray = ['Lyxor UCITS ETF BEL 20 TR', 'Aedifica', 'Lyxor Nasdaq 100 UCITS ETF', 'Coca-Cola', 'Zalando SE', 'Unilever', 'Facebook', 'Tesla'];
 var stockArray = [];
 //var scrapeResponse = [{"name":"Lyxor UCITS ETF BEL 20 TR","percentage":"0,60%","price":"57,09","history":[{"timespan":"1 januari","percent":"5,39%","high":"57,250","low":"53,950"},{"timespan":"1 week","percent":"1,76%","high":"57,250","low":"55,550"},{"timespan":"1 maand","percent":"4,25%","high":"57,250","low":"54,120"},{"timespan":"3 maanden","percent":"5,72%","high":"57,250","low":"53,700"},{"timespan":"6 maanden","percent":"5,14%","high":"57,250","low":"51,270"},{"timespan":"1 jaar","percent":"12,32%","high":"57,250","low":"47,020"}]},{"name":"Aedifica","percentage":"0,17%","price":"71,62","history":[{"timespan":"1 januari","percent":"0,76%","high":"73,790","low":"70,000"},{"timespan":"1 week","percent":"-0,43%","high":"72,000","low":"71,050"},{"timespan":"1 maand","percent":"0,66%","high":"72,690","low":"70,130"},{"timespan":"3 maanden","percent":"6,43%","high":"73,790","low":"66,200"},{"timespan":"6 maanden","percent":"-1,88%","high":"78,800","low":"66,000"},{"timespan":"1 jaar","percent":"17,95%","high":"78,800","low":"60,000"}]},{"name":"Lyxor Nasdaq 100 UCITS ETF","percentage":"-0,39%","price":"19,92","history":[{"timespan":"1 januari","percent":"9,28%","high":"20,240","low":"18,107"},{"timespan":"1 week","percent":"-0,52%","high":"20,087","low":"19,851"},{"timespan":"1 maand","percent":"3,05%","high":"20,240","low":"19,311"},{"timespan":"3 maanden","percent":"9,18%","high":"20,240","low":"17,999"},{"timespan":"6 maanden","percent":"19,83%","high":"20,240","low":"16,227"},{"timespan":"1 jaar","percent":"29,31%","high":"20,240","low":"14,826"}]},{"name":"Unilever","percentage":"0,87%","price":"46,05","history":[{"timespan":"1 januari","percent":"17,91%","high":"46,045","low":"37,330"},{"timespan":"1 week","percent":"3,88%","high":"46,045","low":"44,030"},{"timespan":"1 maand","percent":"18,87%","high":"46,045","low":"38,525"},{"timespan":"3 maanden","percent":"21,80%","high":"46,045","low":"37,330"},{"timespan":"6 maanden","percent":"12,21%","high":"46,045","low":"36,265"},{"timespan":"1 jaar","percent":"16,23%","high":"46,045","low":"36,265"}]},{"name":"Zalando SE","percentage":"2,74%","price":"36,78","history":[{"timespan":"1 januari","percent":"1,35%","high":"40,380","low":"34,920"},{"timespan":"1 week","percent":"2,78%","high":"37,160","low":"35,430"},{"timespan":"1 maand","percent":"-2,27%","high":"38,450","low":"35,430"},{"timespan":"3 maanden","percent":"4,97%","high":"40,380","low":"34,715"},{"timespan":"6 maanden","percent":"3,04%","high":"41,115","low":"33,545"},{"timespan":"1 jaar","percent":"25,49%","high":"41,115","low":"22,805"}]},{"name":"Coca-Cola","percentage":"0,62%","price":"42,29","history":[{"timespan":"1 januari","percent":"2,00%","high":"42,560","low":"40,220"},{"timespan":"1 week","percent":"-0,45%","high":"42,490","low":"41,740"},{"timespan":"1 maand","percent":"4,21%","high":"42,560","low":"40,220"},{"timespan":"3 maanden","percent":"0,69%","high":"42,560","low":"40,220"},{"timespan":"6 maanden","percent":"0,05%","high":"43,430","low":"39,880"},{"timespan":"1 jaar","percent":"-6,44%","high":"47,130","low":"39,880"}]},{"name":"Facebook","percentage":"0,40%","price":"138,79","history":[{"timespan":"1 januari","percent":"20,54%","high":"139,490","low":"114,774"},{"timespan":"1 week","percent":"1,18%","high":"139,490","low":"136,080"},{"timespan":"1 maand","percent":"3,43%","high":"139,490","low":"132,550"},{"timespan":"3 maanden","percent":"15,97%","high":"139,490","low":"114,774"},{"timespan":"6 maanden","percent":"9,20%","high":"139,490","low":"113,554"},{"timespan":"1 jaar","percent":"26,85%","high":"139,490","low":"106,310"}]},{"name":"Tesla","percentage":"-0,49%","price":"243,69","history":[{"timespan":"1 januari","percent":"14,02%","high":"287,390","low":"210,960"},{"timespan":"1 week","percent":"-3,13%","high":"253,890","low":"243,000"},{"timespan":"1 maand","percent":"-9,49%","high":"287,390","low":"242,010"},{"timespan":"3 maanden","percent":"26,80%","high":"287,390","low":"190,810"},{"timespan":"6 maanden","percent":"25,31%","high":"287,390","low":"178,190"},{"timespan":"1 jaar","percent":"17,44%","high":"287,390","low":"178,190"}]}];
@@ -72,7 +73,10 @@ app.get('/totalStockValueReturn', function(req, res, next){
 
 app.get('/trafficLights/', function(req, res, next){
 	res.send(calculatelights());
-	
+});
+
+app.get('/lastDataRetrievalTime/', function(req, res, next){
+	res.send(lastDataRetrievalTime.toLocaleString());	
 });
 
 function getDayStockPercentage(stockName){
@@ -284,7 +288,9 @@ function getStockData(numberOfAttempts){
 					stockArray = stockTransactionsFile.getListOfActiveStocks().map(function(obj){
 						return obj.name;
 					});
-					console.log("Fetching of stock data succeeded");				
+					console.log("Fetching of stock data succeeded");
+					lastDataRetrievalTime = new Date();
+					console.log("New retrieval time set to: " + lastDataRetrievalTime.toLocaleString());
 				}
 				catch(e){
 					console.log(e);

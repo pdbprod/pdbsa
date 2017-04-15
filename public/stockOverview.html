@@ -78,6 +78,7 @@
 			<div class="col-md-1"></div>
 			<div class="col-md-10">
 				<div class="alert alert-danger" role="alert">Data in process of being retrieved.</div>
+				<p>Most recent data retrieval at server: <span data-bind="text: lastDataRetrievalTime"></span></p>
 				<div class="panel panel-primary">
 					<div class="panel-heading">Aandelen overzicht</div>
 					<table class="table table-hover own-table-internalscroll">
@@ -297,6 +298,7 @@
 		self.yearLight = ko.observable("not known");
 		self.totalStockValueAbsReturn = ko.observable("not known");
 		self.totalStockValuePercReturn = ko.observable("not known");
+		self.lastDataRetrievalTime = ko.observable("not retrieved");
 
 		self.addStocks = function(stocks){
 			for (let i=0; i<stocks.length; i++){
@@ -312,6 +314,7 @@
 				theStockList[i].updateStockData();
 				console.log("Updating stock: " + theStockList[i].name());
 			}
+			self.getLastDataRetrievalTime();
 		};
 		
 		$.ajax({
@@ -370,6 +373,20 @@
 					self.yearLight(response.year);
 				},
 				error: function(xhr) {
+					// to be implemented
+				}
+			});
+		};
+		
+		self.getLastDataRetrievalTime = function(){
+			$.ajax({
+			 url: "/lastDataRetrievalTime",
+			 type: "GET",
+			 success: function(response){
+				console.log("Last Data Retrieval Time succesfully retrieved");
+				self.lastDataRetrievalTime(response);
+			 },
+			 error: function(xhr) {
 					// to be implemented
 				}
 			});
