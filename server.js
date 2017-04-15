@@ -79,6 +79,12 @@ app.get('/lastDataRetrievalTime/', function(req, res, next){
 	res.send(lastDataRetrievalTime.toLocaleString());	
 });
 
+app.get('/refreshServerData/', function(req, res, next){
+	getStockData(0, function(responseMessage){
+		res.send(responseMessage);
+	});
+});
+
 function getDayStockPercentage(stockName){
 	var stockPercentageOrig = scrapeResponse
 		.find(function(arrayElement){
@@ -263,7 +269,7 @@ function getStockShortName(stockName){
 	return result;
 };
 
-function getStockData(numberOfAttempts){
+function getStockData(numberOfAttempts, callback){
 	console.log("Trying to fetch the stock data");
 	https.get('https://pdbss.herokuapp.com/withRecover', function(res){
 		// https://pdbss.herokuapp.com/
@@ -274,7 +280,7 @@ function getStockData(numberOfAttempts){
 			if(numberOfAttempts === 0){
 				console.log("Retrying data fetch again within 10 seconds.");
 				setTimeout(function(){
-					getStockData(1);
+					getStockData(1, callback);
 				}, 10000);
 			}
 		}
@@ -291,6 +297,7 @@ function getStockData(numberOfAttempts){
 					console.log("Fetching of stock data succeeded");
 					lastDataRetrievalTime = new Date();
 					console.log("New retrieval time set to: " + lastDataRetrievalTime.toLocaleString());
+					callback("Fetching of stock data succeeded");
 				}
 				catch(e){
 					console.log(e);
@@ -302,10 +309,10 @@ function getStockData(numberOfAttempts){
 		if(numberOfAttempts === 0){
 			console.log("Retrying data fetch again within 10 seconds.");
 			setTimeout(function(){
-				getStockData(1);
+				getStockData(1, callback);
 			}, 10000);
 		}
-	});	
+	});
 };
 
 function regularlyRefreshStockDataOnServer(){

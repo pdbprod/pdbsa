@@ -76,10 +76,21 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-md-1"></div>
+			<div class="col-md-6">
+					Most recent data retrieval at server: <span data-bind="text: lastDataRetrievalTime"></span>
+			</div>
+			<div class="col-md-4 text-right">
+			<button type="button" class="btn btn-xs btn-default" id="serverrefreshbutton">request server refresh</button>
+			<button type="button" class="btn btn-xs btn-default" id="browserrefreshbutton">request browser refresh</button>
+			</div>
+			<div class="col-md-1"></div>
+		</div>
+		<div class="row" style="margin-top: 5px"></div>
+		<div class="row">
+			<div class="col-md-1"></div>
 			<div class="col-md-10">
 				<div class="alert alert-danger fade in alert-dismissable" role="alert" id="alertDataBeingRetrieved">Data in process of being retrieved.
 				<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a></div>
-				<p>Most recent data retrieval at server: <span data-bind="text: lastDataRetrievalTime"></span></p>
 				<div class="panel panel-primary">
 					<div class="panel-heading">Aandelen overzicht</div>
 					<table class="table table-hover own-table-internalscroll">
@@ -230,7 +241,6 @@
 				url: "/dayStockPercentage/" + self.name(),
 				type: "GET",
 				success: function(response){
-					console.log(response);
 					self.dayStockPercentage(response);
 					if(response!=null){
 						dataRetrieved = true;
@@ -329,7 +339,6 @@
 			type: "GET",
 			success: function(response) {
 				console.log("StockArray succesfully retrieved");
-				console.log(response);
 				self.addStocks(response);
 			},
 			error: function(xhr) {
@@ -343,7 +352,6 @@
 				type: "GET",
 				success: function(response) {
 					console.log("TotalStockValue succesfully retrieved");
-					console.log(response);
 					self.totalStockValue(response);
 				},
 				error: function(xhr) {
@@ -358,7 +366,6 @@
 				type: "GET",
 				success: function(response) {
 					console.log("TotalStockValueReturn succesfully retrieved");
-					console.log(response);
 					self.totalStockValueAbsReturn(response.returnAbsConv);
 					self.totalStockValuePercReturn(response.returnPercConv);
 				},
@@ -373,8 +380,7 @@
 				url: "/trafficLights",
 				type: "GET",
 				success: function(response) {
-					console.log("TrafficLigts succesfully retrieved");
-					console.log(response);
+					console.log("TrafficLights succesfully retrieved");
 					self.dayLight(response.day);
 					self.monthLight(response.month);
 					self.yearLight(response.year);
@@ -418,27 +424,56 @@
 			}, 30000);
 		};
 		
-		self.refreshStockListData()
-		self.getTrafficLights();
-		self.getTotalStockValue();
-		self.getTotalStockValueReturn();
+		self.refreshDataOnce = function(){
+			self.refreshStockListData()
+			self.getTrafficLights();
+			self.getTotalStockValue();
+			self.getTotalStockValueReturn();
+		}
+		
+		self.refreshServerData = function(){
+			$.ajax({
+			 url: "/refreshServerData",
+			 type: "GET",
+			 success: function(response){
+				console.log("ServerData Refreshed");
+				self.refreshDataOnce();
+			 },
+			 error: function(xhr) {
+					// to be implemented
+				}
+			});
+		};
+		
+		self.refreshDataOnce();
 		refreshStockData();
 		refreshTrafficLights();
 		refreshTotals();
 		
 	};
 	
+	
+	
 	function closeAlertDataBeingRetrieved(){
 		$('#alertDataBeingRetrieved').alert('close');
 	};
 	
-	ko.applyBindings(new StockViewModel() );
+	theViewModel = new StockViewModel();
+	ko.applyBindings(theViewModel);
 	
 	</script>
 	
 	<script> <!-- For hoovering tooltips-->
 		$(document).ready(function(){
 			$('[data-toggle="tooltip"]').tooltip({ placement: 'right'}); 
+		});
+	</script>
+	<script> <!-- For refresh buttons -->
+		$('#browserrefreshbutton').on('click', function (e) {
+			theViewModel.refreshDataOnce();
+		});
+		$('#serverrefreshbutton').on('click', function (e) {
+			theViewModel.refreshServerData();
 		});
 	</script>
 </body>
