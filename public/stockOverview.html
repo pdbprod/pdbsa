@@ -165,15 +165,19 @@
 		</div>
 	</div>
 	
-	<div class="modal fade" id="stock-detail-modal" tabindex="-1" role="dialog" data-bind="$data">
-		<div class="modal-dialog modal-md" role="document">
+	<div class="modal fade" id="stock-detail-modal" tabindex="-1" role="dialog">
+		<div class="modal-dialog modal-md" role="document" data-bind="with:selectedStock">
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-					<h4 class="modal-title">Aandeel informatie</h4>
+					<h4 class="modal-title">Aandeel informatie: <span data-bind="text: shortName"></span></h4>
 				</div>
 				<div class="modal-body">
-					<p>One fine body&hellip;</p>
+					<!-- <p>One fine body&hellip;</p> -->
+					<table class="table table-bordered">
+						<tr><th>Full name</th><td><span data-bind="text:name"></span></td></tr>
+						<tr><th>Current Stock Value</th><td><span data-bind="text:stockValue"></span></td></tr>
+					</table>
 					<div data-bind="text: shortName"></div>
 				</div>
 				<div class="modal-footer">
@@ -183,35 +187,12 @@
 		</div>
 	</div>
 	
-	<script type="text/html" id="stock-template2">
-		<a data-toggle="modal" href=".bs-example-modal-lg"><div data-bind="text: shortName"></div></a>
-	</script>
-	
 	<script type="text/html" id="stock-template">
-		<a data-toggle="modal" href="#stock-detail-modal" id="1234" data-bind="click: $data"><div data-bind="text: shortName"></div></a>
-		<!-- <div id="hidden-modal-div" style = "display: none" data-bind=></div> -->
-		
-	</script>
-	
-	
-	<script>
-	$('#stock-detail-modal').on('show.bs.modal', function (event) {
-		// var trigger = $(event.relatedTarget).data;
-		// console.log(trigger);
-		// var button = $(event.relatedTarget) // Button that triggered the modal
-		// var recipient = button.data('whatever') // Extract info from data-* attributes
-			// If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
-			// Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
-		// var modal = $(this)
-		// modal.find('.modal-title').text('New message to Peter');
-		console.log("In jQuery");
-	})
+		<a data-toggle="modal" href="#stock-detail-modal" data-bind="click: $root.selectStock"><div data-bind="text: shortName"></div></a>		
 	</script>
 
-	<script>
-	
+	<script>	
 	var dataRetrieved = false;
-
 	function Stock(stockName){
 		var self = this;
 		self.name = ko.observable(stockName);
@@ -316,6 +297,7 @@
 		self.totalStockValueAbsReturn = ko.observable("not known");
 		self.totalStockValuePercReturn = ko.observable("not known");
 		self.lastDataRetrievalTime = ko.observable("not retrieved");
+		self.selectedStock = ko.observable("not assigned");
 
 		self.addStocks = function(stocks){
 			for (let i=0; i<stocks.length; i++){
@@ -445,14 +427,15 @@
 			});
 		};
 		
+		self.selectStock = function(data){
+			self.selectedStock(data);		
+		};
+		
 		self.refreshDataOnce();
 		refreshStockData();
 		refreshTrafficLights();
 		refreshTotals();
-		
 	};
-	
-	
 	
 	function closeAlertDataBeingRetrieved(){
 		$('#alertDataBeingRetrieved').alert('close');
@@ -460,7 +443,6 @@
 	
 	theViewModel = new StockViewModel();
 	ko.applyBindings(theViewModel);
-	
 	</script>
 	
 	<script> <!-- For hoovering tooltips-->
@@ -468,6 +450,7 @@
 			$('[data-toggle="tooltip"]').tooltip({ placement: 'right'}); 
 		});
 	</script>
+	
 	<script> <!-- For refresh buttons -->
 		$('#browserrefreshbutton').on('click', function (e) {
 			theViewModel.refreshDataOnce();
