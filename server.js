@@ -317,11 +317,15 @@ function getStockData(numberOfAttempts, callback){
 
 function regularlyRefreshStockDataOnServer(){
 	setInterval(function(){
-		getStockData(0);
+		getStockData(0, function(responseMessage){
+			console.log(responseMessage);
+		});
 	},1200000)
 }
 
-getStockData(0);
+getStockData(0, function(responseMessage){
+		console.log(responseMessage);
+});
 regularlyRefreshStockDataOnServer();
 
 // additional line
