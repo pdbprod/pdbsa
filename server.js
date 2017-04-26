@@ -332,5 +332,3 @@ getStockData(0, function(responseMessage){
 		console.log(responseMessage);
 });
 regularlyRefreshStockDataOnServer();
-
-// additional line
