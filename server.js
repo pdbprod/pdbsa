@@ -20,7 +20,7 @@ var statusDateRetrieval = "notFetched";
 var app = express();
 app.use(morgan('dev'));
 app.use(express.static(__dirname + '/public'));
-app.listen(process.ENV.port, hostname, function(){
+app.listen(process.env.PORT, hostname, function(){
 	console.log('Server running at http://' + hostname + ':' + port);
 });
 
