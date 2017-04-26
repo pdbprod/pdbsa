@@ -20,9 +20,13 @@ var statusDateRetrieval = "notFetched";
 var app = express();
 app.use(morgan('dev'));
 app.use(express.static(__dirname + '/public'));
-app.listen(port, hostname, function(){
+app.listen(process.ENV.port, hostname, function(){
 	console.log('Server running at http://' + hostname + ':' + port);
 });
+
+// app.listen(port, hostname, function(){
+	// console.log('Server running at http://' + hostname + ':' + port);
+// });
 
 app.get('/stockArray', function(req, res, next){
     res.send(stockArray);
