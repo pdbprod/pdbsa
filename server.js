@@ -5,7 +5,7 @@ var https = require('https');
 
 var stockTransactionsFile = require("./stockTransactionsFile.js");
 
-var hostname = 'localhost';
+//var hostname = 'localhost';
 var port = process.env.PORT || 3000;
 
 var USDtoEUR = 0.934710473;
@@ -18,10 +18,11 @@ var statusDateRetrieval = "notFetched";
 
 
 var app = express();
+app.set('port', port);
 app.use(morgan('dev'));
 app.use(express.static(__dirname + '/public'));
-app.listen(port, hostname, function(){
-	console.log('Server running at http://' + hostname + ':' + port);
+app.listen(app.get('port'), function(){
+	console.log('Server running at port:' + port);
 });
 
 // app.listen(port, hostname, function(){
