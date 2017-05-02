@@ -138,10 +138,24 @@ var stockTransactionsArray = [
 		exchangerate: 1.0571,
 		transactionDate: "2017-03-01",
 		transactionCosts: {
-			currency: "EUR",
+			currency: "USD",
 			stockTax: 5.51,
 			brokerRenumeration: 29.95,
 		}
+	},
+	{
+		name: "Johnson & Johnson",
+		transactionType: "buy",
+		number: 18,
+		stockValue: 123.35,
+		currency: "USD",
+		exchangerate: 1.0915,
+		transactionDate: "2017-05-02",
+		transactionCosts: {
+			currency: "USD",
+			stockTax: 6.08,
+			brokerRenumeration:	29.95,
+		}		
 	},
 ];
 
