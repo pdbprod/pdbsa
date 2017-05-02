@@ -163,13 +163,21 @@ var stockPropertiesArray = [
 	{
 		name: "Lyxor UCITS ETF BEL 20 TR",
 		shortName: "BEL20",
-		stockType: "tracker"
+		stockType: "tracker",
+		industry: "general"
 	},
 	{
 		name: "Lyxor Nasdaq 100 UCITS ETF",
 		shortName: "NASDAQ100",
-		stockType: "tracker"
-	}	
+		stockType: "tracker",
+		industry: "technology"
+	},
+	{
+		name: "Johnson & Johnson",
+		shortName: "J&J",
+		stockType: "stock",
+		industry: "pharmaceuticals"
+	}
 ];
 
 var getStockTransactionsArray = exports.getStockTransactionsArray = function (){
