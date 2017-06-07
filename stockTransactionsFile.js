@@ -157,6 +157,19 @@ var stockTransactionsArray = [
 			brokerRenumeration:	29.95,
 		}		
 	},
+	{
+		name: "Ahold Delhaize Koninklijke",
+		transactionType: "buy",
+		number: 100,
+		stockValue: 19.325,
+		currency: "EUR",
+		transactionDate: "2017-06-07",
+		transactionCosts: {
+			currency: "USD",
+			stockTax: 5.22,
+			brokerRenumeration:	14.95,
+		}		
+	},
 ];
 
 var stockPropertiesArray = [
@@ -177,6 +190,12 @@ var stockPropertiesArray = [
 		shortName: "J&J",
 		stockType: "stock",
 		industry: "pharmaceuticals"
+	},
+	{
+		name: "Ahold Delhaize Koninklijke",
+		shortName: "AHold Delh",
+		stockType: "stock",
+		industry: "retail"
 	}
 ];
 
